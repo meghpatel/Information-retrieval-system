@@ -1,4 +1,4 @@
-# Ignoring the dataset. Use the zip to extract it.
+# Ignoring the dataset. Use zip to extract it
 bbcsport/
 bbcsportprocessed/
 .vscode/

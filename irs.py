@@ -5,29 +5,44 @@ nltk.download('punkt')
 nltk.download('stopwords')
 from nltk.stem import PorterStemmer
 from nltk.stem.lancaster import LancasterStemmer
+from nltk.tokenize import RegexpTokenizer
 from textblob import TextBlob
 import os
-
-stopwords = set(open('stopwords.txt','r').read().split('\n'))
+import re
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+# stopwords = set(open('stopwords.txt','r').read().split('\n'))
 
 punctuations = [char for char in string.punctuation]
 
 directory_in_str = 'bbcsport/'
 final_directory_in_str = 'bbcsportprocessed/'
+tokenizer = RegexpTokenizer(r'\w+')
 
 def removeStopwords(data):
     # print (data)
-    newdata = data.lower().replace('\n',' ').split(' ')
-    # print (type(newdata))
-    newwords = []
-    for i,word in enumerate(newdata):
-        if word not in stopwords:
-            if len(word) != 0 and word[0] in punctuations:
-                word = word[1:]
-            if len(word) != 0 and word[-1] in punctuations:
-                word = word[:-1]
-            newwords.append(word)
-    return ' '.join(newwords)
+    content = re.sub(r'[^a-zA-Z ]','',data)
+    words = tokenizer.tokenize(content)
+    preprocessed_content = [word.lower() for word in words if word.lower() not in stopwords.words('english')]
+    # newdata = data.lower().replace('\n',' ').split(' ')
+    # # print (type(newdata))
+    # newwords = []
+    # for i,word in enumerate(newdata):
+    #     if word not in stopwords:
+    #         if len(word) != 0 and word[0] in punctuations:
+    #             word = word[1:]
+    #         if len(word) != 0 and word[-1] in punctuations:
+    #             word = word[:-1]
+    #         newwords.append(word)
+
+    from nltk.stem import PorterStemmer
+
+    stemmer= PorterStemmer()
+
+    stemmmed_words = []
+    for word in preprocessed_content:
+        stemmmed_words.append(stemmer.stem(word))
+    return ' '.join(stemmmed_words)
 
 def savetopreprocess(folder, filename, content):
     file = final_directory_in_str + folder + '/' + str(filename)
